@@ -1,0 +1,4 @@
+whisper_env/
+*.mp3
+*.docx
+.DS_Store
