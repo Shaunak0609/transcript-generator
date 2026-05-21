@@ -1,4 +1,21 @@
+# Virtual environment
 whisper_env/
+
+# Python bytecode
+__pycache__/
+*.py[cod]
+
+# Whisper downloaded model weights
+*.pt
+
+# Generated output files
 *.mp3
 *.docx
+*.txt
+outputs/
+
+# macOS
 .DS_Store
+
+# Environment variables
+.env
