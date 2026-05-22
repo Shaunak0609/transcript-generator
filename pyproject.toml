@@ -1,0 +1,44 @@
+[build-system]
+requires = ["setuptools>=64"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "transcribeflow"
+version = "0.1.0"
+description = "AI Video Transcriber & Translator — powered by OpenAI Whisper"
+readme = "README.md"
+requires-python = ">=3.10"
+authors = [
+    { name = "Shaunak Pradhan", email = "shaunpra2016@gmail.com" },
+]
+keywords = [
+    "transcription", "whisper", "ai", "video", "audio",
+    "translation", "subtitle", "speech-to-text",
+]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Operating System :: OS Independent",
+    "Topic :: Multimedia :: Sound/Audio :: Speech",
+    "Topic :: Text Processing :: Linguistic",
+]
+dependencies = [
+    "openai-whisper",
+    "python-docx",
+    "streamlit",
+    "yt-dlp",
+]
+
+[project.scripts]
+transcribeflow = "app.cli:main"
+
+[project.optional-dependencies]
+dev = ["pytest"]
+
+# Auto-discover the `app` package; exclude top-level scripts and test dirs
+# from being installed as packages.
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["app*"]

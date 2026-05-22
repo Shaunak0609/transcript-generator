@@ -66,15 +66,19 @@ def build_output_path(video_path, wants_translation, source_lang):
     return f"{file_root}_transcript_{source_lang}.docx"
 
 
-def build_output_paths(video_path, wants_translation, source_lang, output_dir, formats):
+def build_output_paths(video_path, wants_translation, source_lang, output_dir, formats,
+                       stem_override=None):
     """New-style: one output file per format, placed in output_dir.
 
     Naming rules:
       Transcription:  {basename}_transcript_{lang}.{ext}  (lang = code or 'auto')
       Translation:    {basename}_translated_en.{ext}       (Whisper always targets English)
+
+    stem_override replaces the basename derived from video_path — used when
+    the caller has a better name (e.g. a sanitized YouTube video title).
     """
     validate_output_dir(output_dir)
-    basename = os.path.splitext(os.path.basename(video_path))[0]
+    basename = stem_override or os.path.splitext(os.path.basename(video_path))[0]
     if wants_translation:
         stem = f"{basename}_translated_en"
     else:

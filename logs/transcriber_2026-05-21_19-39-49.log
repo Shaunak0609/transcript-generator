@@ -1,0 +1,13 @@
+2026-05-21 19:40:45 [INFO    ] --- 1. EXTRACTING AUDIO ---
+2026-05-21 19:40:45 [INFO    ] Input:  tmpwodr_ci4.mp4
+2026-05-21 19:40:45 [DEBUG   ] Full path: /var/folders/_r/sbsr95713yqb4kbxvtmpnlqc0000gn/T/tmpwodr_ci4.mp4
+2026-05-21 19:41:05 [INFO    ] Status: Audio extraction successful.
+2026-05-21 19:41:05 [INFO    ] --- 2. RUNNING WHISPER AI ---
+2026-05-21 19:41:05 [INFO    ] Task:  Transcription (auto-detect)
+2026-05-21 19:41:05 [INFO    ] Model: base
+2026-05-21 19:41:05 [INFO    ] Note:  The AI model may take a minute to process...
+2026-05-21 19:44:21 [DEBUG   ] Transcript stats: 2784 words, 163 segments
+2026-05-21 19:44:21 [INFO    ] --- SAVING: Word Document ---
+2026-05-21 19:44:21 [INFO    ] Status: Saved to tmpwodr_ci4_transcript_auto.docx
+2026-05-21 19:44:21 [DEBUG   ] Output path: /var/folders/_r/sbsr95713yqb4kbxvtmpnlqc0000gn/T/transcriber_ui_orepqd_a/tmpwodr_ci4_transcript_auto.docx
+2026-05-21 19:44:21 [DEBUG   ] Streamlit pipeline complete | 1 file(s) | dir=/var/folders/_r/sbsr95713yqb4kbxvtmpnlqc0000gn/T/transcriber_ui_orepqd_a

@@ -45,3 +45,15 @@ def check_python_docx():
             "Activate your virtual environment, then run:\n"
             "  pip install python-docx"
         )
+
+
+def check_yt_dlp():
+    """Raise DependencyError if yt-dlp is not installed."""
+    try:
+        import yt_dlp  # noqa: F401
+    except ImportError:
+        raise DependencyError(
+            "yt-dlp is not installed.\n"
+            "Install it with:\n"
+            "  pip install yt-dlp"
+        )
