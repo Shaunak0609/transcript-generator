@@ -21,9 +21,7 @@ Process a single file, a YouTube URL, or an entire folder in one command.
 - [Configuration](#configuration)
 - [Privacy](#privacy)
 - [Troubleshooting](#troubleshooting)
-- [Roadmap](#roadmap)
 - [Project Structure](#project-structure)
-- [License](#license)
 
 ---
 
@@ -71,19 +69,37 @@ Process a single file, a YouTube URL, or an entire folder in one command.
 
 ```bash
 # 1 — Install system dependencies (macOS)
-brew install ffmpeg cmake llvm@15
+brew install ffmpeg
 
 # 2 — Create environment and install
 python3.12 -m venv whisper_env
 source whisper_env/bin/activate
-export LLVM_CONFIG=$(brew --prefix llvm@15)/bin/llvm-config
 pip install -e .
 
-# 3 — Transcribe your first file
+# 3 — Transcribe your first file (command line)
 transcribeflow transcribe lecture.mp4
+
+# 4 — ...or launch the browser UI instead
+streamlit run streamlit_app.py
 ```
 
-Output lands in `outputs/lecture_transcript_auto.docx`.
+Command-line output lands in `outputs/lecture_transcript_auto.docx`.
+The browser UI opens at `http://localhost:8501` — see [Streamlit UI](#streamlit-ui) below.
+
+> **Apple Silicon (M1/M2/M3/M4) note:** if `pip install -e .` fails trying to
+> build `llvmlite` from source (a Whisper dependency) — usually a `cmake`/`LLVM`
+> error — your virtual environment was created with an x86_64 (Intel/Rosetta)
+> Python instead of a native arm64 one. Fix it by recreating the venv with an
+> arm64 Homebrew Python:
+> ```bash
+> brew install python@3.12          # installs the arm64 build under /opt/homebrew
+> rm -rf whisper_env
+> /opt/homebrew/bin/python3.12 -m venv whisper_env
+> source whisper_env/bin/activate
+> pip install -e .
+> ```
+> With the correct architecture, `pip install -e .` downloads a prebuilt
+> `llvmlite` wheel directly — no `cmake` or `llvm` install needed.
 
 ---
 
@@ -96,14 +112,12 @@ macOS with [Homebrew](https://brew.sh). Python 3.10 or later.
 ### Step 1 — Install system tools
 
 ```bash
-brew install ffmpeg cmake llvm@15
+brew install ffmpeg
 ```
 
 | Tool | Purpose |
 |------|---------|
 | `ffmpeg` | Audio extraction from video files and YouTube downloads |
-| `cmake` | Required to compile Whisper's C++ extension |
-| `llvm@15` | C++ toolchain used by the Whisper build |
 
 ### Step 2 — Create a Python virtual environment
 
@@ -114,18 +128,19 @@ source whisper_env/bin/activate
 
 > Always activate the environment before running TranscribeFlow:
 > `source whisper_env/bin/activate`
+>
+> **Apple Silicon (M1/M2/M3/M4):** make sure `python3.12` resolves to a native
+> arm64 Python, not an x86_64 (Intel/Rosetta) one — otherwise `pip install -e .`
+> in the next step will fail trying to build `llvmlite` from source. If you hit
+> that, recreate the venv explicitly with the arm64 Homebrew Python:
+> ```bash
+> brew install python@3.12   # installs the arm64 build under /opt/homebrew
+> rm -rf whisper_env
+> /opt/homebrew/bin/python3.12 -m venv whisper_env
+> source whisper_env/bin/activate
+> ```
 
-### Step 3 — Set the LLVM path
-
-```bash
-export LLVM_CONFIG=$(brew --prefix llvm@15)/bin/llvm-config
-```
-
-Add this line to your `~/.zshrc` or `~/.bash_profile` to make it permanent.
-
-### Step 4 — Install TranscribeFlow
-
-**Recommended — editable install with `transcribeflow` command:**
+### Step 3 — Install TranscribeFlow
 
 ```bash
 pip install -e .
@@ -133,14 +148,6 @@ pip install -e .
 
 This reads `pyproject.toml`, installs all dependencies, and registers the
 `transcribeflow` command in your active environment.
-
-**Alternative — dependencies only (no console command):**
-
-```bash
-pip install -r requirements.txt
-```
-
-Use `python3 transcribe_video.py` as the entry point in this case.
 
 ### First run note
 
@@ -496,14 +503,21 @@ internet connection and try again — partial downloads are resumable.
 - Try a larger model: `--model small` or `--model medium`.
 - If the file has heavy background noise, accuracy will be reduced.
 
-### `LLVM_CONFIG` not set / Whisper install fails
+### `pip install -e .` fails building `llvmlite` (Apple Silicon)
+
+This means your virtual environment was created with an x86_64 (Intel/Rosetta)
+Python instead of a native arm64 one:
 
 ```bash
-export LLVM_CONFIG=$(brew --prefix llvm@15)/bin/llvm-config
-pip install openai-whisper
+brew install python@3.12
+rm -rf whisper_env
+/opt/homebrew/bin/python3.12 -m venv whisper_env
+source whisper_env/bin/activate
+pip install -e .
 ```
 
-Add the `export` line to `~/.zshrc` to make it permanent.
+With the correct architecture, `llvmlite` installs from a prebuilt wheel —
+no `cmake` or `llvm` needed.
 
 ### Wrong language detected
 
@@ -520,9 +534,6 @@ transcribeflow transcribe video.mp4 --debug
 ```
 
 This prints the full Python traceback and any FFmpeg stderr output.
-
----
-
 
 ---
 
@@ -550,8 +561,7 @@ transcription_project/
 ├── logs/                 Timestamped log files (auto-created)
 ├── outputs/              Default output directory (auto-created)
 ├── tests/
-├── pyproject.toml        Package metadata and `transcribeflow` entry point
-├── requirements.txt      Pinned development dependencies
+├── pyproject.toml        Package metadata, dependencies, and `transcribeflow` entry point
 ├── streamlit_app.py      Browser UI
 └── transcribe_video.py   Legacy entry point (calls app.cli:main)
 ```
